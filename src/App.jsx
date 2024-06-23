@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 import { AuthProvider } from "./context/authContext";
 import { ProtectedRoute } from "./routes";
@@ -15,7 +15,7 @@ function App() {
   return (
     <AuthProvider>
       <TaskProvider>
-        <BrowserRouter>
+        <HashRouter>
           <Navbar />
           <main className="flex justify-center w-full">
             <Routes>
@@ -29,10 +29,9 @@ function App() {
                 <Route path="/profile" element={<h1>Profile</h1>} />
               </Route>
             </Routes>
-
             <ToastContainer />
           </main>
-        </BrowserRouter>
+        </HashRouter>
       </TaskProvider>
     </AuthProvider>
   );
