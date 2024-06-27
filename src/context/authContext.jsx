@@ -45,9 +45,6 @@ export const AuthProvider = ({ children }) => {
       if (res.data.error) {
         console.log("Error Error Error ");
       } else {
-        console.log("Set Cookies: ", res.data.user);
-        let expiryTime = new Date();
-        expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
         console.log(res.data.token);
         setUser(res.data.user);
         setIsAuthenticated(true);
@@ -59,15 +56,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
-    setUser(null);
-    setIsAuthenticated(false);
+    //Cookies.remove("token");
+    //setUser(null);
+    //setIsAuthenticated(false);
   };
 
   useEffect(() => {
     const checkLogin = async () => {
       const cookies = Cookies.get();
-      //console.log("Vo  ", cookies.token);
+      console.log("Vo  ", cookies.token);
       if (!cookies.token) {
         setIsAuthenticated(false);
         setLoading(false);
