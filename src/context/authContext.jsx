@@ -75,6 +75,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLogin = async () => {
       const cookies = Cookies.get();
+      let expiryTime = new Date();
+      expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
       Cookies.set("token", cookies.token, {
         expires: expiryTime,
         secure: true,
@@ -87,10 +89,12 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
         return;
       }
-      console.log("object");
+      console.log("Vo-*****************************  ", cookies.token);
+
       try {
         const res = await verifyTokenRequest(cookies.token);
         console.log("object, ", res);
+        console.log("Voresssssssssssssssssssssssssssssssssssssssssssss  ", res);
         if (!res.data) return setIsAuthenticated(false);
         setIsAuthenticated(true);
         setUser(res.data);
