@@ -33,7 +33,7 @@ export function TaskFormPage() {
         });
       }
 
-      // navigate("/tasks");
+      navigate("/tasks");
     } catch (error) {
       console.log(error);
       // window.location.href = "/";
@@ -43,7 +43,8 @@ export function TaskFormPage() {
   useEffect(() => {
     const loadTask = async () => {
       if (params.id) {
-        const task = await getTask(params.id);
+        const res = await getTask(params.id);
+        const task = res.task;
         setValue("title", task.title);
         setValue("description", task.description);
         setValue(

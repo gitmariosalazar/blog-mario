@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
-import { ToastCustom } from "../components/ui/ToastCustom";
 
 const AuthContext = createContext();
 
@@ -17,6 +16,15 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
+  // clear errors after 5 seconds
+  useEffect(() => {
+    if (errors.length > 0) {
+      const timer = setTimeout(() => {
+        setErrors([]);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
 
   const signup = async (user) => {
     try {
@@ -32,16 +40,15 @@ export const AuthProvider = ({ children }) => {
 
   const signin = async (user) => {
     try {
+      console.log(user);
       const res = await loginRequest(user);
       if (res.data.error) {
-        ToastCustom(
-          "success",
-          "Login successfully!",
-          "Message Info",
-          "top-right"
-        );
+        console.log("Error Error Error ");
       } else {
-        //console.log("Data", res.data.user);
+        console.log("Set Cookies: ", res.data.user);
+        let expiryTime = new Date();
+        expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
+        console.log(res.data.token);
         setUser(res.data.user);
         setIsAuthenticated(true);
       }

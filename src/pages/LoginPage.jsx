@@ -56,6 +56,8 @@ export function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
+  console.log("object", isAuthenticated);
+
   const onSubmit = (data) => {
     signin(data);
   };
@@ -73,9 +75,7 @@ export function LoginPage() {
             className="h-[125px] w-[125px] rounded-e-full rounded-s-full"
           />
         </div>
-        {loginErrors.map((error, i) => (
-          <Message message={error} key={i} />
-        ))}
+
         <h4 className="font-bold flex justify-center items-center p-2 text-blue-600">
           Enter your login credentials
         </h4>
