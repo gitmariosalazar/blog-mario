@@ -9,13 +9,15 @@
     "preview": "vite preview"
   },
   "keywords": [
-    "\"Web",
-    "Page\""
+    "Web",
+    "Page"
   ],
-  "author": "\"Mario Salazar\"",
+  "author": "Mario Salazar",
   "license": "ISC",
   "dependencies": {
+    "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.6.0",
+    "@mui/icons-material": "^5.15.20",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "dayjs-plugin-utc": "^0.1.2",
