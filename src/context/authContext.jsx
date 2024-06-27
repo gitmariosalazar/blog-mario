@@ -50,6 +50,13 @@ export const AuthProvider = ({ children }) => {
         let expiryTime = new Date();
         expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
         console.log(res.data.token);
+
+        Cookies.set("token", res.data.token, {
+          expires: expiryTime,
+          secure: true,
+          sameSite: "None",
+          path: "/",
+        });
         setUser(res.data.user);
         setIsAuthenticated(true);
       }
@@ -68,7 +75,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkLogin = async () => {
       const cookies = Cookies.get();
-      //console.log("Vo  ", cookies.token);
+      console.log("Vo-------------------------------  ", cookies.token);
       if (!cookies.token) {
         setIsAuthenticated(false);
         setLoading(false);
