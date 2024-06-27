@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         Cookies.set("token", res.data.token, {
           expires: expiryTime,
           secure: true,
-          sameSite: "None",
+          sameSite: "strict",
           path: "/",
         });
         setUser(res.data.user);
