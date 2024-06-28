@@ -7,7 +7,7 @@ import { CookiesProvider } from "react-cookie";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CookiesProvider defaultSetOptions={{ path: "/" }}>
+    <CookiesProvider>
       <App />
 
       <ToastContainer />

@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         console.log("-----------------------------------------------------");
         console.log(cookies.token);
         console.log("-----------------------------------------------------");
-        const res = await verifyTokenRequest(cookies.token);
+        const res = await verifyTokenRequest();
         if (!res.data) return setIsAuthenticated(false);
         setUser(res.data);
         setIsAuthenticated(true);
@@ -64,10 +64,12 @@ export const AuthProvider = ({ children }) => {
         let expiryTime = new Date();
         expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
         setCookie("token", res.data.token, {
+          httpOnly: false,
           expires: expiryTime,
           path: "/",
           secure: true,
           sameSite: "none",
+          partitioned: true,
         });
         setUser(res.data.user);
         setIsAuthenticated(true);
