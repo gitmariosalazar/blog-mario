@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 
 const AuthContext = createContext();
 
@@ -16,15 +15,30 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
-  // clear errors after 5 seconds
+  const [cookies, setCookie] = useCookies(["token"]);
+
   useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => {
-        setErrors([]);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [errors]);
+    const checkLogin = async () => {
+      if (!cookies.token) {
+        setIsAuthenticated(false);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await verifyTokenRequest(cookies.token);
+        if (!res.data) return setIsAuthenticated(false);
+        setUser(res.data);
+        setIsAuthenticated(true);
+      } catch (error) {
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkLogin();
+  }, [cookies.token]);
 
   const signup = async (user) => {
     try {
@@ -34,78 +48,38 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       }
     } catch (error) {
-      setErrors(error.response.data.message);
+      setErrors([error.response.data.message]);
     }
   };
 
   const signin = async (user) => {
     try {
-      console.log(user);
       const res = await loginRequest(user);
-      console.log(res);
       if (res.data.error) {
-        console.log("Error Error Error ");
+        setErrors([res.data.error]);
       } else {
-        console.log("Set Cookies: ", res.data.user);
         let expiryTime = new Date();
         expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
-        console.log(res.data.token);
-
-        Cookies.set("token", res.data.token, {
+        setCookie("token", res.data.token, {
+          httpOnly: true,
           expires: expiryTime,
-          secure: true,
-          sameSite: "strict",
           path: "/",
+          secure: true,
+          sameSite: "none",
         });
         setUser(res.data.user);
         setIsAuthenticated(true);
       }
     } catch (error) {
-      //console.log("Error ", error.response);
-      setErrors(error.response.data.message);
+      setErrors([error.response.data.message]);
     }
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    setCookie("token", "", { expires: new Date(0), path: "/" });
     setUser(null);
     setIsAuthenticated(false);
   };
-
-  useEffect(() => {
-    const checkLogin = async () => {
-      const cookies = Cookies.get();
-      let expiryTime = new Date();
-      expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
-      Cookies.set("token", cookies.token, {
-        expires: expiryTime,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-      });
-      console.log("Vo-------------------------------  ", cookies.token);
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-      console.log("Vo-*****************************  ", cookies.token);
-
-      try {
-        const res = await verifyTokenRequest(cookies.token);
-        console.log("object, ", res);
-        console.log("Voresssssssssssssssssssssssssssssssssssssssssssss  ", res);
-        if (!res.data) return setIsAuthenticated(false);
-        setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
-      } catch (error) {
-        setIsAuthenticated(false);
-        setLoading(false);
-      }
-    };
-    checkLogin();
-  });
 
   return (
     <AuthContext.Provider
