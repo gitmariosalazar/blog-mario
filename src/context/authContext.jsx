@@ -61,7 +61,6 @@ export const AuthProvider = ({ children }) => {
         let expiryTime = new Date();
         expiryTime.setTime(expiryTime.getTime() + 5 * 60 * 1000);
         setCookie("token", res.data.token, {
-          httpOnly: true,
           expires: expiryTime,
           path: "/",
           secure: true,
